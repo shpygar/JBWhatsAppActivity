@@ -28,6 +28,8 @@
 
 @property (nonatomic, strong) WhatsAppMessage *message;
 
++(NSString*) encodedText:(NSString*)text;
+
 @end
 
 
@@ -53,14 +55,14 @@
     
     if (_message.text)
     {
-        url = [NSString stringWithFormat:@"%@send?text=%@",url,_message.text];
+        url = [NSString stringWithFormat:@"%@send?text=%@",url, [JBWhatsAppActivity encodedText:_message.text]];
         
         if (_message.abid) {
             url = [NSString stringWithFormat:@"%@&abid=%@",url,_message.abid];
         }
     }
     
-    return [NSURL URLWithString:[url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    return [NSURL URLWithString:url];
 }
 
 - (BOOL)canPerformWithActivityItems:(NSArray *)activityItems
@@ -92,6 +94,15 @@
             break;
         }
     }
+}
+
++(NSString*) encodedText:(NSString*)text{
+    return (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(
+                                                                NULL,
+                                                                (CFStringRef)text,
+                                                                NULL,
+                                                                (CFStringRef)@"!*'();:@&=+$,/?%#[]", //The characters you want to replace go here
+                                                                kCFStringEncodingUTF8 ));
 }
 
 @end
