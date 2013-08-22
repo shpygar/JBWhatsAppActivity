@@ -41,7 +41,7 @@
 
 - (UIImage *)activityImage
 {
-    return [UIImage imageNamed:@"whatsapp"];
+    return [UIImage imageNamed:@"activity_whatsapp"];
 }
 
 - (NSString *)activityTitle
